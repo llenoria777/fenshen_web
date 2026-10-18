@@ -21,7 +21,7 @@ visual-sentence-project/
 ├─ tests.js               生成算法自动测试
 └─ assets/
    ├─ covers/             首页六个封面资源（当前为空）
-   ├─ gifs/               第二页 24 个动图（当前为空）
+   ├─ gifs/               第二页 24 个动图（页面引用 .webp 优化版，同名 .gif 保留作备份）
    └─ qr.png              结果页内置二维码（可选，没有则显示“QR”占位）
 ```
 
@@ -59,19 +59,25 @@ cover: 'assets/covers/my-own-cover.png',
 
 将上述 `01` 替换为 `02`～`06`，总共 24 个 GIF，全部放在 `assets/gifs/`。
 
-建议 GIF 使用一致的 1:1 画布比例，尽量压缩体积，并预留一些透明边距以避免被裁切。项目的图片样式为 `object-fit: contain`，不会强行拉伸图片。如果某个 GIF 不存在，会自动显示对应的 CSS 占位动画。
+建议动图使用一致的画布比例，尽量压缩体积，并预留一些透明边距以避免被裁切。项目的图片样式为 `object-fit: contain`，不会强行拉伸图片。如果某个动图不存在，会自动显示对应的 CSS 占位动画。
 
-**更换不同文件名**：打开 `data.js` 修改对应 `gif` 路径，如 `gif: 'assets/gifs/my-motion.gif'`。
+**性能说明**：为了手机端能秒开，页面实际引用的是 `.webp` 动图（画面与 GIF 一致，24 个合计约 4.5MB，原 GIF 约 29MB）。当前 `data.js` 中的路径都指向 `.webp`；原始 `.gif` 仍留在同目录作备份，页面不会加载它们。若以后替换了新的 GIF 源文件，用 ffmpeg 生成同名 `.webp` 再更新路径即可：
+
+```powershell
+ffmpeg -y -i 新动图.gif -vf "scale=-2:'min(600,ih)'" -c:v libwebp_anim -quality 85 -loop 0 -an 新动图.webp
+```
+
+**更换不同文件名**：打开 `data.js` 修改对应 `gif` 路径，如 `gif: 'assets/gifs/my-motion.webp'`。
 
 ## 5. 替换 GIF 对应中文词语
 
 只编辑 `data.js` 中 `libraries` 数组的 `words`：
 
 ```js
-adjective: { text: '柔软', gif: 'assets/gifs/library-01-adjective.gif', after: '的' },
-noun:      { text: '云朵', gif: 'assets/gifs/library-01-noun.gif' },
-verb:      { text: '旋转', gif: 'assets/gifs/library-01-verb.gif' },
-adverb:    { text: '悄悄', gif: 'assets/gifs/library-01-adverb.gif', after: '地' }
+adjective: { text: '柔软', gif: 'assets/gifs/library-01-adjective.webp', after: '的' },
+noun:      { text: '云朵', gif: 'assets/gifs/library-01-noun.webp' },
+verb:      { text: '旋转', gif: 'assets/gifs/library-01-verb.webp' },
+adverb:    { text: '悄悄', gif: 'assets/gifs/library-01-adverb.webp', after: '地' }
 ```
 
 - `text`：显示的中文词语；
@@ -121,6 +127,8 @@ CSS 占位动画只用于正式图片文件尚未存在的情况，真实 GIF �
 4. 把生成的二维码图片保存为 `assets/qr.png`（即 `fenshen_web/assets/qr.png`），刷新网页后，结果卡片右下角的灰色“QR”占位会自动替换成真实二维码，“保存并分享”导出的图片也会使用它。
 5. 如需使用其他文件名或格式（如 `my-qr.jpg`），打开 `index.html` 修改 `id="qr-image"` 的 `src`。文件不存在时网页自动退回“QR”占位，不影响其他功能。
 6. 用真正的手机扫描二维码，测试图片加载、尺寸、排版及返回功能。
+
+项目自带 `_headers` 文件：部署到 Netlify 后，`assets/` 下的资源按一年期不可变缓存，同一设备二次打开几乎秒开。另外网页加载后会自动在后台预取全部动图，选择图形时下载已在进行，点"start"后基本无需再等。
 
 如果部分观众使用微信内置浏览器，或从中国大陆访问，建议提前用实际网络测试访问是否稳定。
 

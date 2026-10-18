@@ -176,6 +176,22 @@
     chipById.set(library.id, chip);
   }
 
+  /* 预取全部动图：进入网页后就利用空闲时间静默下载，正式生成时几乎无需再等。
+     请求串行 + 低优先级，不与首屏关键资源抢带宽；file:// 等场景失败时静默忽略。 */
+  function prefetchAllMedia() {
+    const urls = new Set();
+    for (const lib of libraries) {
+      for (const entry of Object.values(lib.words)) urls.add(entry.gif);
+    }
+    let chain = Promise.resolve();
+    for (const url of urls) {
+      chain = chain.then(() => fetch(url, { priority: 'low' }).catch(() => {}));
+    }
+  }
+  const kickPrefetch = () => { try { prefetchAllMedia(); } catch (error) { /* 预取失败不影响交互 */ } };
+  if (typeof requestIdleCallback === 'function') requestIdleCallback(kickPrefetch, { timeout: 3000 });
+  else setTimeout(kickPrefetch, 1200);
+
   function showPage(page) {
     if (entryPage) entryPage.hidden = page !== 'entry';
     choosePage.hidden = page !== 'choose';
