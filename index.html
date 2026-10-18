@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#f6f5f0" />
+  <title>形与词 · 视觉句子生成器</title>
+  <link rel="stylesheet" href="./style.css" />
+  <script src="./data.js" defer></script>
+  <script src="./script.js" defer></script>
+</head>
+<body>
+  <main class="app">
+    <section class="page page-entry" id="page-entry" aria-labelledby="entry-title">
+      <div class="entry-stage" id="entry-stage" aria-hidden="true">
+        <img class="entry-shape" src="./assets/covers/icon-zrf.png" alt="" draggable="false"
+             data-x="-0.02" data-y="0.87" data-w="0.27" data-r="0" style="width:27%" />
+        <img class="entry-shape" src="./assets/covers/icon-qsy.png" alt="" draggable="false"
+             data-x="0.30" data-y="0.76" data-w="0.46" data-r="0" style="width:46%" />
+        <img class="entry-shape" src="./assets/covers/icon-wra.png" alt="" draggable="false"
+             data-x="0.60" data-y="0.81" data-w="0.36" data-r="0" style="width:36%" />
+        <img class="entry-shape" src="./assets/covers/icon-ylq.png" alt="" draggable="false"
+             data-x="-0.03" data-y="0.43" data-w="0.34" data-r="0" style="width:34%" />
+        <img class="entry-shape" src="./assets/covers/icon-ywl.png" alt="" draggable="false"
+             data-x="-0.04" data-y="0.60" data-w="0.38" data-r="0" style="width:38%" />
+        <img class="entry-shape" src="./assets/covers/icon-zyxy.png" alt="" draggable="false"
+             data-x="0.66" data-y="0.32" data-w="0.34" data-r="0" style="width:34%" />
+      </div>
+      <div class="entry-content">
+        <h1 class="entry-title" id="entry-title">
+          <span class="line">我的</span>
+          <span class="line line-2">“生成”</span>
+          <span class="line line-3">分身</span>
+        </h1>
+        <p class="entry-intro">选择几个图形库，用随机的语法，拼一句谁也没说过的话。<br>每一次生成，都是一个属于你的视觉分身。</p>
+        <button class="entry-start" id="start-button" type="button">开始生成</button>
+      </div>
+    </section>
+
+    <section class="page page-choose" id="page-choose" aria-labelledby="choose-title" hidden>
+      <h1 class="sr-only" id="choose-title">选择你的图形</h1>
+      <div class="preview-stage" id="preview-stage">
+        <div class="preview-empty" id="preview-empty">
+          <img class="ghost-shape ghost-1" src="./assets/covers/icon-zrf.png" alt="" draggable="false" />
+          <img class="ghost-shape ghost-2" src="./assets/covers/icon-ylq.png" alt="" draggable="false" />
+          <img class="ghost-shape ghost-3" src="./assets/covers/icon-wra.png" alt="" draggable="false" />
+          <p class="preview-hint">选择任意个元素，<br>开始生成分身。</p>
+        </div>
+      </div>
+      <div class="choose-dock">
+        <div class="icon-row" id="icon-row" role="group" aria-label="点按选择图形元素"></div>
+        <button class="start-button" id="confirm-button" type="button" hidden>start</button>
+      </div>
+    </section>
+
+    <section class="page page-loading" id="page-loading" aria-labelledby="loading-title" hidden>
+      <div class="loading-orbit" id="loading-orbit" aria-hidden="true"></div>
+      <p class="loading-text" id="loading-title" role="status">生成中…</p>
+    </section>
+
+    <section class="page page-result" id="page-result" aria-labelledby="result-title" hidden>
+      <div class="result-bg" aria-hidden="true">
+        <img class="bg-shape bg-1" src="./assets/covers/icon-ylq.png" alt="" draggable="false" />
+        <img class="bg-shape bg-2" src="./assets/covers/icon-zyxy.png" alt="" draggable="false" />
+        <img class="bg-shape bg-3" src="./assets/covers/icon-zrf.png" alt="" draggable="false" />
+        <img class="bg-shape bg-4" src="./assets/covers/icon-qsy.png" alt="" draggable="false" />
+        <img class="bg-shape bg-5" src="./assets/covers/icon-wra.png" alt="" draggable="false" />
+        <img class="bg-shape bg-6" src="./assets/covers/icon-ywl.png" alt="" draggable="false" />
+      </div>
+      <h1 class="sr-only" id="result-title">你的视觉句子</h1>
+      <div class="result-modal" role="dialog" aria-label="生成结果">
+        <div class="share-card" id="share-card">
+          <div class="gif-strip" id="result-grid"></div>
+          <div class="share-meta">
+            <div class="meta-icons" id="result-icons" aria-hidden="true"></div>
+            <p class="share-sentence" id="result-sentence" aria-live="polite"></p>
+            <div class="share-qr">
+              <span class="qr-note">扫码生成分身</span>
+              <span class="qr-box" id="qr-box">QR</span>
+            </div>
+          </div>
+        </div>
+        <div class="result-actions">
+          <button class="action-button action-save" id="save-button" type="button">保存并分享</button>
+          <button class="action-button action-restart" id="restart-button" type="button">重新生成</button>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
