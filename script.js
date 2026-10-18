@@ -287,6 +287,21 @@
     }
   });
 
+  /* 结果页内置二维码：assets/qr.png 加载成功时替换“QR”灰色占位；文件不存在时保留占位。 */
+  const qrBox = document.getElementById('qr-box');
+  const qrImage = document.getElementById('qr-image');
+  if (qrBox && qrImage) {
+    const showQrImage = () => {
+      [...qrBox.childNodes].forEach(node => { if (node.nodeType === Node.TEXT_NODE) node.remove(); });
+      qrImage.hidden = false;
+    };
+    if (qrImage.complete && qrImage.naturalWidth > 0) showQrImage();
+    else {
+      qrImage.addEventListener('load', showQrImage);
+      qrImage.addEventListener('error', () => { qrImage.hidden = true; });
+    }
+  }
+
   function downloadShareCard() {
     const card = document.getElementById('share-card');
     const sentenceEl = document.getElementById('result-sentence');
@@ -333,21 +348,25 @@
       ctx.fillText(text, sentenceEl.offsetLeft, sentenceEl.offsetTop + halfLeading + fontSize * 0.8 + i * lineHeight);
     });
 
-    /* 二维码占位与提示文字。 */
-    const qrStyle = getComputedStyle(qrBox);
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillStyle = qrStyle.backgroundColor;
-    ctx.fillRect(qrBox.offsetLeft, qrBox.offsetTop, qrBox.clientWidth, qrBox.clientHeight);
-    ctx.fillStyle = qrStyle.color;
-    ctx.font = `${qrStyle.fontWeight} ${qrStyle.fontSize} ${qrStyle.fontFamily}`;
-    ctx.fillText('QR', qrBox.offsetLeft + qrBox.clientWidth / 2, qrBox.offsetTop + qrBox.clientHeight / 2);
+    /* 二维码与提示文字：正式二维码（assets/qr.png）加载成功时直接绘制，否则退回灰色占位。 */
     const noteStyle = getComputedStyle(note);
     ctx.textAlign = 'right';
     ctx.textBaseline = 'alphabetic';
     ctx.fillStyle = noteStyle.color;
     ctx.font = `${noteStyle.fontWeight} ${noteStyle.fontSize} ${noteStyle.fontFamily}`;
     ctx.fillText(note.textContent, qrBox.offsetLeft - 12, qrBox.offsetTop + qrBox.clientHeight - 8);
+    if (qrImage && qrImage.complete && qrImage.naturalWidth > 0) {
+      ctx.drawImage(qrImage, qrBox.offsetLeft, qrBox.offsetTop, qrBox.clientWidth, qrBox.clientHeight);
+    } else {
+      const qrStyle = getComputedStyle(qrBox);
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle = qrStyle.backgroundColor;
+      ctx.fillRect(qrBox.offsetLeft, qrBox.offsetTop, qrBox.clientWidth, qrBox.clientHeight);
+      ctx.fillStyle = qrStyle.color;
+      ctx.font = `${qrStyle.fontWeight} ${qrStyle.fontSize} ${qrStyle.fontFamily}`;
+      ctx.fillText('QR', qrBox.offsetLeft + qrBox.clientWidth / 2, qrBox.offsetTop + qrBox.clientHeight / 2);
+    }
 
     canvas.toBlob(blob => {
       if (!blob) { window.alert('生成图片失败，请重试。'); return; }

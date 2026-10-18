@@ -93,7 +93,9 @@ h1 { font-size: clamp(28px, 7.5vw, 39px); letter-spacing: -.04em; margin: 18px 0
   cursor: pointer; animation: rise .32s ease both;
 }
 .start-button:active { transform: scale(.96); }
-.start-button[hidden] { display: none; }
+/* 隐藏时仍占位：必须显式声明 display 才能覆盖浏览器对 [hidden] 的默认 display:none，
+   再用 visibility 让它不可见、不可点、不进读屏——图标行位置因此固定不跳动 */
+.start-button[hidden] { display: block; visibility: hidden; }
 @keyframes rise { from { opacity: 0; transform: translateY(12px) scale(.9); } to { opacity: 1; transform: translateY(0) scale(1); } }
 
 /* 加载过场：图形圆周分布的"星系"——公转+自转+呼吸+漂浮，正片叠底让重叠处加深混色 */
@@ -182,6 +184,9 @@ h1 { font-size: clamp(28px, 7.5vw, 39px); letter-spacing: -.04em; margin: 18px 0
   width: 74px; height: 74px; background: #d9d9d9; display: grid; place-items: center;
   font-size: 21px; font-weight: 800; color: #26262a; letter-spacing: .02em;
 }
+/* 真实二维码（assets/qr.png）加载成功后填充整个占位框；白底保证扫码对比度 */
+.qr-box img { width: 100%; height: 100%; object-fit: contain; display: block; background: #fff; }
+.qr-box img[hidden] { display: none; }
 .result-actions { display: flex; flex-direction: column; gap: 10px; padding: 3px 6px 5px; }
 .action-button {
   min-height: 47px; border: 0; border-radius: 13px;
